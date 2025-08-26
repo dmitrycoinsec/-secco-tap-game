@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <title>SECCO Tap — Marketplace Edition</title>
+  <meta name="theme-color" content="#f4f6fa"/>
+  <link rel="icon" href="./tonconnect-icon.svg"/>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@tonconnect/ui@2.0.9/dist/tonconnect-ui.css">
+  <script src="https://unpkg.com/@tonconnect/ui@2.0.9/dist/tonconnect-ui.umd.min.js"></script>
+  <link rel="stylesheet" href="./assets/style.css"/>
+</head>
+<body>
+<header class="header">
+  <div class="head-in">
+    <div class="brand"><span class="dot"></span>SECCO</div>
+    <div class="wallet">
+      <div class="status" id="wallet-status">Не подключен</div>
+      <div id="connect-root"></div>
+    </div>
+  </div>
+</header>
+
+<div id="app"></div>
+<nav class="bottom-nav" id="nav"></nav>
+<div class="toast" id="toast"></div>
+
+<script>
+  window.__SECCO_CONF__ = {
+    API_BASE: "/api",
+    TON_RECEIVER: "UQBOxIuUPXHOu1fY0O7uGe9yIIaa0-DRcLIk2qVNa_0tZbFD",
+    TON_MANIFEST: "https://secco-tap-game.vercel.app/tonconnect-manifest.json"
+  };
+</script>
+<script src="./assets/app.js"></script>
+</body>
+</html>
