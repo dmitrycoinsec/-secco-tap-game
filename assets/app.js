@@ -568,10 +568,30 @@ function bootSettings(){ $('#reset')?.addEventListener('click', ()=>{ localStora
 
 function render(){
   const r = (location.hash.replace('#','')||'game');
-  const nav = (id,i)=>`<a href="#${id}" class="${r===id?'active':''}" aria-label="${id}">${i}</a>`;
-  $('#nav').innerHTML = nav('game','🎮')+nav('shop','🛒')+nav('wheel','🎡')+nav('quests','🗺️')+nav('profile','👤');
-  let view = PageGame(); if(r==='shop') view=PageShop(); if(r==='wheel') view=PageWheel(); if(r==='quests') view=PageQuests(); if(r==='profile') view=PageProfile(); if(r==='settings') view=PageSettings();
+  const icons = {
+    game: '<i data-lucide="gamepad-2"></i>',
+    shop: '<i data-lucide="shopping-cart"></i>',
+    wheel: '<i data-lucide="crown"></i>',
+    quests: '<i data-lucide="map"></i>',
+    profile: '<i data-lucide="user"></i>'
+  };
+  const nav = (id,label)=>`<a href="#${id}" class="${r===id?'active':''}" aria-label="${id}">${icons[id]}<span>${label}</span></a>`;
+  $('#nav').innerHTML = nav('game','Игра')+nav('shop','Магазин')+nav('wheel','Колесо')+nav('quests','Квесты')+nav('profile','Профиль');
+  
+  let view = PageGame(); 
+  if(r==='shop') view=PageShop(); 
+  if(r==='wheel') view=PageWheel(); 
+  if(r==='quests') view=PageQuests(); 
+  if(r==='profile') view=PageProfile(); 
+  if(r==='settings') view=PageSettings();
+  
   $('#app').innerHTML = view;
+  
+  // Initialize Lucide icons
+  if(typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+  
   if(r==='quests') bootQuests();
   if(r==='profile') bootProfile();
   if(r==='settings') bootSettings();
