@@ -176,10 +176,43 @@ function PageGame(){
       energy.textContent = Math.floor(S.energy);
       combo.textContent = 'x'+S.combo.toFixed(1);
       
-      // Добавляем анимацию кнопки
+      // Добавляем эффекты
       if(tap) {
-        tap.style.transform = 'scale(0.95)';
-        setTimeout(() => tap.style.transform = 'scale(1)', 100);
+        createSuccessEffect(tap);
+        
+        // Показываем +SECCO
+        const rect = tap.getBoundingClientRect();
+        const floatingText = document.createElement('div');
+        floatingText.textContent = `+${earned.toFixed(2)} SECCO`;
+        floatingText.style.cssText = `
+          position: fixed;
+          left: ${rect.left + rect.width/2}px;
+          top: ${rect.top}px;
+          transform: translateX(-50%);
+          color: #ec4899;
+          font-weight: bold;
+          font-size: 18px;
+          pointer-events: none;
+          z-index: 1001;
+          text-shadow: 0 0 10px #ec4899;
+        `;
+        document.body.appendChild(floatingText);
+        
+        let y = rect.top;
+        let opacity = 1;
+        const animate = () => {
+          y -= 2;
+          opacity -= 0.02;
+          floatingText.style.top = y + 'px';
+          floatingText.style.opacity = opacity;
+          
+          if(opacity > 0) {
+            requestAnimationFrame(animate);
+          } else {
+            floatingText.remove();
+          }
+        };
+        requestAnimationFrame(animate);
       }
       
       save();
@@ -598,6 +631,71 @@ function render(){
   initTon();
 }
 addEventListener('hashchange', render);
+// Система частиц
+function createParticles(x, y, count = 8) {
+  const container = document.body;
+  for(let i = 0; i < count; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.cssText = `
+      position: fixed;
+      left: ${x}px;
+      top: ${y}px;
+      width: ${4 + Math.random() * 8}px;
+      height: ${4 + Math.random() * 8}px;
+      background: ${['#ec4899', '#8b5cf6', '#6366f1', '#f59e0b'][Math.floor(Math.random() * 4)]};
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1000;
+      box-shadow: 0 0 10px currentColor;
+    `;
+    
+    const angle = (i / count) * Math.PI * 2;
+    const velocity = 2 + Math.random() * 3;
+    const dx = Math.cos(angle) * velocity;
+    const dy = Math.sin(angle) * velocity - Math.random() * 2;
+    
+    container.appendChild(particle);
+    
+    let posX = x, posY = y;
+    let opacity = 1;
+    
+    const animate = () => {
+      posX += dx;
+      posY += dy;
+      opacity -= 0.02;
+      
+      particle.style.left = posX + 'px';
+      particle.style.top = posY + 'px';
+      particle.style.opacity = opacity;
+      particle.style.transform = `scale(${opacity})`;
+      
+      if(opacity > 0) {
+        requestAnimationFrame(animate);
+      } else {
+        particle.remove();
+      }
+    };
+    
+    requestAnimationFrame(animate);
+  }
+}
+
+// Функция для создания эффекта успеха
+function createSuccessEffect(element) {
+  const rect = element.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  
+  createParticles(centerX, centerY, 12);
+  
+  // Добавляем свечение
+  element.style.filter = 'brightness(1.2) drop-shadow(0 0 20px #ec4899)';
+  setTimeout(() => {
+    element.style.filter = '';
+  }, 300);
+}
+
 document.addEventListener('DOMContentLoaded', ()=>{
   setInterval(()=>{
     const now = Date.now(); const dt = (now - S.lastTick)/1000; S.lastTick = now;
